@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:wallpaper_app/screens/cat_details.dart';
 
-import 'main_screen.dart';
+import 'screens/main_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +16,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       home: MainScreen(),
+      routes: {
+        CatDetails.id: (context) => CatDetails(),
+      },
     );
   }
 }
