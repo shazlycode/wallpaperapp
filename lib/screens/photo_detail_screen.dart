@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 
 class PhotoDetailsScreen extends StatefulWidget {
@@ -114,6 +116,22 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
         const SnackBar(content: Text('Wallpaper set successfully')));
   }
 
+  Future<File> downloadImage(String imgUrl) async {
+    final appDir = await getApplicationDocumentsDirectory();
+    final file = File('${appDir.path}/abc');
+    final response = await Dio().get(
+      imgUrl,
+      options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          receiveTimeout: 0),
+    );
+    final raf = file.openSync(mode: FileMode.write);
+    raf.writeByteSync(response.data);
+    await raf.close();
+    return file;
+  }
+
   @override
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
@@ -207,7 +225,11 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                                 },
                                 icon: Icon(Icons.download_outlined)),
                             IconButton(
-                                onPressed: () {}, icon: Icon(Icons.favorite))
+                                onPressed: () {
+                                  downloadImage(widget.picsList![index]['src']
+                                      ['large2x']);
+                                },
+                                icon: Icon(Icons.favorite))
                           ],
                         ),
                       ),
