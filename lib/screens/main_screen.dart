@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:wallpaper_app/screens/cat_details.dart';
+import 'package:http/http.dart' as http;
+import 'package:wallpaper_app/screens/search_screen.dart';
+import 'package:wallpaper_app/widgets/side_drawer.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -20,23 +25,62 @@ class Cat {
 
 class _MainScreenState extends State<MainScreen> {
   var k = GlobalKey<ScaffoldState>();
+  final searchText = TextEditingController();
+
+  Future getCatItems(String catName) async {
+    var url = Uri.parse(
+        'https://api.pexels.com/v1/search?query=$catName&per_page=80'
+        // 'https://api.pexels.com/v1/search/?page=1&per_page=15&query=$catName'
+        );
+    final response = await http.get(url, headers: {
+      'Authorization':
+          '563492ad6f91700001000001f4005939620e47ab8c179a04d5d39306'
+    });
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      print(data['photos'][0]['src']['large']);
+      return data;
+    }
+  }
 
   List<Cat> img = [
-    Cat(id: '1', catImage: 'assets/images/img2.png', catName: 'nature'),
-    Cat(id: '2', catImage: 'assets/images/img3.png', catName: 'graphic'),
-    Cat(id: '1', catImage: 'assets/images/bg.jpg', catName: 'photography'),
-    Cat(id: '1', catImage: 'assets/images/img2.png', catName: 'animals'),
-    Cat(id: '1', catImage: 'assets/images/img3.png', catName: 'hd'),
+    Cat(id: '1', catImage: 'assets/images/Nature.jpg', catName: 'Nature'),
+    Cat(id: '2', catImage: 'assets/images/Space.jpg', catName: 'Space'),
+    Cat(id: '4', catImage: 'assets/images/Macro.jpg', catName: 'Macro'),
+    Cat(id: '5', catImage: 'assets/images/4k.jpg', catName: '4k'),
+    Cat(id: '6', catImage: 'assets/images/Pro.jpg', catName: 'Pro'),
+    Cat(
+        id: '7',
+        catImage: 'assets/images/WaterCraft.jpg',
+        catName: 'Water Craft'),
+    Cat(id: '8', catImage: 'assets/images/Flowers.jpg', catName: 'Flowers'),
+    Cat(id: '9', catImage: 'assets/images/Vehicles.jpg', catName: 'Vehicles'),
+    Cat(id: '10', catImage: 'assets/images/Ocean.jpg', catName: 'Ocean'),
+    Cat(id: '11', catImage: 'assets/images/Avenue.jpg', catName: 'Avenue'),
+    Cat(id: '12', catImage: 'assets/images/Lights.jpg', catName: 'Lights'),
+    Cat(id: '13', catImage: 'assets/images/Food.jpg', catName: 'Food'),
+    Cat(id: '14', catImage: 'assets/images/Candles.jpg', catName: 'Candles'),
+    Cat(id: '16', catImage: 'assets/images/Fire.jpg', catName: 'Fire'),
+    Cat(
+        id: '17',
+        catImage: 'assets/images/Reflections.jpg',
+        catName: 'Reflections'),
+    Cat(
+        id: '18',
+        catImage: 'assets/images/Aircrafts.jpg',
+        catName: 'Aircrafts'),
+    Cat(id: '19', catImage: 'assets/images/Winter.jpg', catName: 'Winter'),
+    Cat(id: '20', catImage: 'assets/images/Animals.jpg', catName: 'Animals'),
   ];
+
   @override
   Widget build(BuildContext context) {
-    // final _scaffold = Scaffold.of(context);
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
       key: k,
       // backgroundColor: Colors.amberAccent,
-      drawer: Drawer(),
+      drawer: SideDrawer(),
       body: SafeArea(
           // child:
           //     CustomScrollView(
@@ -201,7 +245,16 @@ class _MainScreenState extends State<MainScreen> {
             left: w / 20,
             top: h / 4,
             width: w * .9,
-            child: const TextField(
+            child: TextField(
+              controller: searchText,
+              onEditingComplete: () {
+                print(searchText.text);
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return SearchScreen(
+                    searchTxt: searchText.text,
+                  );
+                })).then((value) => searchText.clear());
+              },
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 filled: true,
@@ -310,9 +363,18 @@ class _MainScreenState extends State<MainScreen> {
                                         CatDetails(cat: img[index]))),
                             child: Card(
                               elevation: 5,
-                              child: Image(
-                                image: AssetImage(img[index].catImage!),
-                                fit: BoxFit.cover,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(img[index].catImage!),
+                                        fit: BoxFit.cover)),
+                                child: Text(
+                                  img[index].catName!,
+                                  style: GoogleFonts.lato(
+                                      fontWeight: FontWeight.bold,
+                                      backgroundColor: Colors.black87),
+                                ),
+                                alignment: Alignment.bottomCenter,
                               ),
                             ),
                           );

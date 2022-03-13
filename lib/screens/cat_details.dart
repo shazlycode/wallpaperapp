@@ -17,7 +17,7 @@ class CatDetails extends StatefulWidget {
 class _CatDetailsState extends State<CatDetails> {
   Future getCatItems(String catName) async {
     var url = Uri.parse(
-        'https://api.pexels.com/v1/search?query=$catName&per_page=20'
+        'https://api.pexels.com/v1/search?query=$catName&per_page=80'
         // 'https://api.pexels.com/v1/search/?page=1&per_page=15&query=$catName'
         );
     final response = await http.get(url, headers: {

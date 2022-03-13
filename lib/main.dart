@@ -14,7 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+          canvasColor: Colors.black,
+          iconTheme: IconThemeData(color: Colors.white),
+          textTheme: TextTheme(
+              bodyText2: TextStyle(color: Colors.white),
+              bodyText1: TextStyle(color: Colors.white))),
       home: MainScreen(),
       routes: {
         CatDetails.id: (context) => CatDetails(),
