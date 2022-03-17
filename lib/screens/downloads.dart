@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/providers/provider.dart';
@@ -86,6 +87,35 @@ class _DownloadsScreenState extends State<DownloadsScreen> {
                     itemCount: dwonloadsData.imagesList.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
+                        onLongPress: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Delete Wallpaper!!!'),
+                                  content: Text(
+                                      'Are you sure you want to delete wallpaper?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('NO')),
+                                    IconButton(
+                                        onPressed: () {
+                                          context
+                                              .read<WallpaperProvider>()
+                                              .deleteImageFile(dwonloadsData
+                                                  .imagesList[index]);
+                                          Navigator.pop(context);
+                                          setState(() {});
+                                        },
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        )),
+                                  ],
+                                );
+                              });
+                        },
                         onTap: () {
                           Navigator.push(
                               context,

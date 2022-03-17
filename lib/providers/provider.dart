@@ -22,4 +22,10 @@ class WallpaperProvider with ChangeNotifier {
   }
 
 //downloadDir!.listSync().map((e) => e.path).toList();
+
+  void deleteImageFile(String path) {
+    _imagesList.removeWhere((element) => element == path);
+    File(path).deleteSync();
+    notifyListeners();
+  }
 }

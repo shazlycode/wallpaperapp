@@ -22,6 +22,7 @@ class _SideDrawerState extends State<SideDrawer> {
                 textAlign: TextAlign.center,
               ),
               ListTile(
+                onTap: () => Navigator.pushNamed(context, '/'),
                 title: Text('Home'),
                 leading: FaIcon(FontAwesomeIcons.home, color: Colors.white),
               ),
