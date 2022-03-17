@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wallpaper_app/screens/downloads.dart';
 
 class SideDrawer extends StatefulWidget {
   const SideDrawer({Key? key}) : super(key: key);
@@ -29,9 +30,12 @@ class _SideDrawerState extends State<SideDrawer> {
                 leading: FaIcon(FontAwesomeIcons.heart, color: Colors.white),
               ),
               ListTile(
-                title: Text('My Downloads'),
-                leading: FaIcon(FontAwesomeIcons.download, color: Colors.white),
-              ),
+                  title: Text('My Downloads'),
+                  leading:
+                      FaIcon(FontAwesomeIcons.download, color: Colors.white),
+                  onTap: () {
+                    Navigator.popAndPushNamed(context, DownloadsScreen.id);
+                  }),
               ListTile(
                 title: Text('Auto Wallpaper Settings'),
                 leading: FaIcon(FontAwesomeIcons.hammer, color: Colors.white),

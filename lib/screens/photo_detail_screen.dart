@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
@@ -117,10 +118,17 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
         const SnackBar(content: Text('Wallpaper set successfully')));
   }
 
+  Directory? appDir;
   Future<File?> downloadImage(String imgUrl, String fileName) async {
     try {
-      final appDir = await path.getApplicationDocumentsDirectory();
-      final file = File('${appDir.path}/$fileName');
+      // final appDir = await path.getApplicationDocumentsDirectory();
+      var dir = await getExternalStorageDirectory();
+      appDir = Directory('${dir!.path}/downloades');
+      if (!appDir!.existsSync()) {
+        await appDir!.create();
+      }
+
+      final file = File('${appDir!.path}/$fileName');
       final response = await Dio().get(imgUrl,
           options: Options(
               followRedirects: false,
