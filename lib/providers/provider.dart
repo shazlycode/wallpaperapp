@@ -28,4 +28,31 @@ class WallpaperProvider with ChangeNotifier {
     File(path).deleteSync();
     notifyListeners();
   }
+
+  List _autoThemeImages = [];
+
+  List get autoThemeImages => _autoThemeImages;
+
+  bool _isSelected = false;
+  get isSelected => _isSelected;
+
+  addToAutoThemeImages(String imgPath) {
+    if (!_autoThemeImages.contains(imgPath)) {
+      _autoThemeImages.add(imgPath);
+      _isSelected = true;
+    } else {
+      _autoThemeImages.removeWhere((element) => element == imgPath);
+      _isSelected = false;
+    }
+    print(_autoThemeImages.length);
+    notifyListeners();
+  }
+
+  bool getIseSelected(String imgPath) {
+    if (_autoThemeImages.contains(imgPath)) {
+      return _isSelected = true;
+    } else {
+      return _isSelected = false;
+    }
+  }
 }

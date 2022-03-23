@@ -35,7 +35,7 @@ class _SavedImageViewState extends State<SavedImageView> {
   ];
 
   Future setHomeScreen(File imgFile) async {
-    showDialog(
+    await showDialog(
         context: context,
         builder: (context) {
           return Dialog(

@@ -200,17 +200,9 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                   child: Column(
                     children: [
                       Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              widget.picsList![index]['alt'],
-                              style: TextStyle(backgroundColor: Colors.black87),
-                            ),
-                          )),
-                      Align(
                         alignment: Alignment.topRight,
                         child: Container(
+                          padding: EdgeInsets.all(10),
                           margin: EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               color: Colors.black87,
@@ -283,8 +275,6 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                                     //         ));
                                   },
                                   icon: Icon(Icons.download_outlined)),
-                              IconButton(
-                                  onPressed: () {}, icon: Icon(Icons.favorite))
                             ],
                           ),
                         ),

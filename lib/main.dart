@@ -1,11 +1,20 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:wallpaper_app/providers/provider.dart';
+import 'package:wallpaper_app/screens/auto_wp_se.dart';
 import 'package:wallpaper_app/screens/cat_details.dart';
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/screens/downloads.dart';
+import 'package:wallpaper_app/screens/splash.dart';
+import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
+import 'package:workmanager/workmanager.dart';
 import 'screens/main_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -26,7 +35,7 @@ class MyApp extends StatelessWidget {
             textTheme: TextTheme(
                 bodyText2: TextStyle(color: Colors.white),
                 bodyText1: TextStyle(color: Colors.white))),
-        home: MainScreen(),
+        home: Splash(),
         routes: {
           CatDetails.id: (context) => CatDetails(),
           DownloadsScreen.id: (context) => DownloadsScreen(),

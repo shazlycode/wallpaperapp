@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:wallpaper_app/screens/cat_details.dart';
 import 'package:http/http.dart' as http;
+import 'package:wallpaper_app/screens/photo_detail_screen.dart';
 import 'package:wallpaper_app/screens/search_screen.dart';
 import 'package:wallpaper_app/widgets/side_drawer.dart';
 
@@ -27,9 +29,8 @@ class _MainScreenState extends State<MainScreen> {
   var k = GlobalKey<ScaffoldState>();
   final searchText = TextEditingController();
 
-  Future getCatItems(String catName) async {
-    var url = Uri.parse(
-        'https://api.pexels.com/v1/search?query=$catName&per_page=80'
+  Future getTrending() async {
+    var url = Uri.parse('https://api.pexels.com/v1/curated?per_page=20'
         // 'https://api.pexels.com/v1/search/?page=1&per_page=15&query=$catName'
         );
     final response = await http.get(url, headers: {
@@ -38,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
     });
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      print(data['photos'][0]['src']['large']);
+      // print(data['photos'][0]['src']['large']);
       return data;
     }
   }
@@ -212,7 +213,7 @@ class _MainScreenState extends State<MainScreen> {
           Image(
             height: h * 2,
             width: w,
-            image: AssetImage('assets/images/bg.jpg'),
+            image: AssetImage('assets/images/bg.webp'),
             fit: BoxFit.cover,
           ),
           Align(
@@ -310,33 +311,57 @@ class _MainScreenState extends State<MainScreen> {
                         TextButton(onPressed: () {}, child: const Text('More'))
                       ],
                     ),
-                    CarouselSlider.builder(
-                        itemCount: img.length,
-                        itemBuilder: (context, index, b) {
-                          return Card(
-                            elevation: 10,
-                            child: Container(
-                              // height: 180,
-                              // width: 150,
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                        img[index].catImage!,
-                                      ),
-                                      fit: BoxFit.cover),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              // child: Image(image: AssetImage(img[index])),
-                            ),
-                          );
-                        },
-                        options: CarouselOptions(
-                            enlargeCenterPage: true,
-                            autoPlay: true,
-                            autoPlayCurve: Curves.bounceInOut,
-                            aspectRatio: 2,
-                            scrollDirection: Axis.horizontal)),
+                    FutureBuilder(
+                        future: getTrending(),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SpinKitDoubleBounce(
+                              color: Colors.red,
+                            );
+                          } else if (!snapshot.hasData) {
+                            return Text('No data available');
+                          }
+                          return CarouselSlider.builder(
+                              itemCount: snapshot.data['photos'].length,
+                              itemBuilder: (context, index, b) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => PhotoDetailsScreen(
+                                          picsList: snapshot.data['photos'],
+                                          index: snapshot.data['photos'][index]
+                                              ['id']),
+                                    ));
+                                  },
+                                  child: Card(
+                                    elevation: 10,
+                                    child: Container(
+                                      // height: 180,
+                                      // width: 150,
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                snapshot.data['photos'][index]
+                                                    ['src']['medium']!,
+                                              ),
+                                              fit: BoxFit.cover),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      // child: Image(image: AssetImage(img[index])),
+                                    ),
+                                  ),
+                                );
+                              },
+                              options: CarouselOptions(
+                                  enlargeCenterPage: true,
+                                  autoPlay: true,
+                                  autoPlayCurve: Curves.bounceInOut,
+                                  aspectRatio: 2,
+                                  scrollDirection: Axis.horizontal));
+                        }),
                     SizedBox(
                       height: 15,
                     ),
