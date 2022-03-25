@@ -1,48 +1,16 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:path_provider/path_provider.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/providers/provider.dart';
+import 'package:wallpaper_app/screens/set_auto_wallpaper.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:path_provider/path_provider.dart' as path;
 
 class AutoWallpaperSettings extends StatefulWidget {
-  callbackDispatcher() {
-    Workmanager().executeTask((taskName, inputData) {
-      setAutoWallpaperFun();
-      return Future.value(true);
-    });
-  }
-
-  setAutoWallpaperFun() async {
-    print('isDone');
-    var dir = await path.getExternalStorageDirectory();
-
-    List images = Directory('${dir!.path}/downloades')
-        .listSync()
-        .map((e) => e.path)
-        .toList();
-    int id = Random().nextInt(images.length);
-    const location = WallpaperManagerFlutter.BOTH_SCREENS;
-
-    WallpaperManagerFlutter().setwallpaperfromFile(File(images[id]), location);
-    print(images[id]);
-    // var dir = await path.getExternalStorageDirectory();
-
-    // List images = Directory('${path.getExternalStorageDirectory()}/downloades')
-    //     .listSync()
-    //     .map((e) => e.path)
-    //     .toList();
-    // int id = Random().nextInt(images.length);
-    // const location = WallpaperManagerFlutter.BOTH_SCREENS;
-
-    // WallpaperManagerFlutter().setwallpaperfromFile(File(images[id]), location);
-    // print(images[id]);
-  }
+  const AutoWallpaperSettings({Key? key}) : super(key: key);
 
   @override
   State<AutoWallpaperSettings> createState() => _AutoWallpaperSettingsState();
@@ -53,8 +21,6 @@ class _AutoWallpaperSettingsState extends State<AutoWallpaperSettings> {
   @override
   void initState() {
     super.initState();
-
-    Workmanager().initialize(widget.callbackDispatcher, isInDebugMode: true);
   }
 
   final List<DropdownMenuItem> _dDMI = [
@@ -127,7 +93,6 @@ class _AutoWallpaperSettingsState extends State<AutoWallpaperSettings> {
 
   @override
   void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     if (isInit) {
       setState(() {
@@ -142,12 +107,12 @@ class _AutoWallpaperSettingsState extends State<AutoWallpaperSettings> {
     isInit = false;
   }
 
-  setAutoWallpaper() async {
-    // print(isDone);
+  // setAutoWallpaper() async {
+  // print(isDone);
 
-    Workmanager().registerOneOffTask('uniqueName', 'taskName',
-        initialDelay: Duration(seconds: 1));
-  }
+  //   Workmanager().registerOneOffTask('uniqueName', 'taskName',
+  //       initialDelay: Duration(seconds: 1));
+  // }
 
   // setWallpaper() {
   //   Timer.periodic(Duration(minutes: minutes), (timer) {
@@ -155,14 +120,32 @@ class _AutoWallpaperSettingsState extends State<AutoWallpaperSettings> {
   //   });
   // }
 
+  getAppDirectory() async {
+    var dir = await path.getExternalStorageDirectory();
+    print(dir);
+  }
+
   @override
   Widget build(BuildContext context) {
     final wallpaperProviderData = context.read<WallpaperProvider>();
+    getAppDirectory();
     return Scaffold(
       appBar: AppBar(
         title: Text('Wallpaper Settings'),
         actions: [
-          IconButton(onPressed: setAutoWallpaper, icon: Icon(Icons.done))
+          IconButton(
+              onPressed: () {
+                // Workmanager().registerOneOffTask('uniqueName', 'taskName',
+                //     initialDelay: Duration(seconds: 1));
+                // print('DONEEEEEEEEEEEEEEEEEEE');
+                final autoThemeImages =
+                    context.read<WallpaperProvider>().autoThemeImages;
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return SetAutoWallpaper(
+                      autoThemeImages: autoThemeImages, minutes: minutes);
+                }));
+              },
+              icon: Icon(Icons.done))
         ],
       ),
       body: SafeArea(

@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
@@ -42,143 +44,145 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
   ];
   var _isLoading = false;
 
-  Future setHomeScreen(String imgUrl) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Container(
-                color: Colors.black,
-                height: 300,
-                width: 300,
-                child: SpinKitWave(
-                  color: Color.fromARGB(255, 246, 54, 6),
-                  size: 50.0,
-                )),
-          );
-        });
-    var location = WallpaperManagerFlutter.HOME_SCREEN;
-    final file = await DefaultCacheManager().getSingleFile(imgUrl);
-    await WallpaperManagerFlutter()
-        .setwallpaperfromFile(File(file.path), location);
-
-    Navigator.pop(context);
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
-  }
-
-  Future setLockScreen(String imgUrl) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Container(
-                color: Colors.black,
-                height: 300,
-                width: 300,
-                child: SpinKitWave(
-                  color: Color.fromARGB(255, 246, 54, 6),
-                  size: 50.0,
-                )),
-          );
-        });
-    var location = WallpaperManagerFlutter.LOCK_SCREEN;
-    final file = await DefaultCacheManager().getSingleFile(imgUrl);
-    await WallpaperManagerFlutter()
-        .setwallpaperfromFile(File(file.path), location);
-    Navigator.pop(context);
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Wallpaper set successfully')));
-  }
-
-  Future setBothScreens(String imgUrl) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Container(
-                color: Colors.black,
-                height: 300,
-                width: 300,
-                child: SpinKitWave(
-                  color: Color.fromARGB(255, 246, 54, 6),
-                  size: 50.0,
-                )),
-          );
-        });
-    var location = WallpaperManagerFlutter.BOTH_SCREENS;
-    final file = await DefaultCacheManager().getSingleFile(imgUrl);
-    await WallpaperManagerFlutter()
-        .setwallpaperfromFile(File(file.path), location);
-    Navigator.pop(context);
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Wallpaper set successfully')));
-  }
-
-  Directory? appDir;
-  Future<File?> downloadImage(String imgUrl, String fileName) async {
-    try {
-      // final appDir = await path.getApplicationDocumentsDirectory();
-      var dir = await getExternalStorageDirectory();
-      appDir = Directory('${dir!.path}/downloades');
-      if (!appDir!.existsSync()) {
-        await appDir!.create();
-      }
-
-      final file = File('${appDir!.path}/$fileName');
-      final response = await Dio().get(imgUrl,
-          options: Options(
-              followRedirects: false,
-              receiveTimeout: 0,
-              responseType: ResponseType.bytes));
-      final raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
-      await GallerySaver.saveImage(file.path);
-      return file;
-    } catch (err) {
-      print(err);
-      return null;
-    }
-  }
-
-  Future<void> openImage(String imgUrl) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Container(
-                color: Colors.black,
-                height: 300,
-                width: 300,
-                child: SpinKitWave(
-                  color: Color.fromARGB(255, 246, 54, 6),
-                  size: 50.0,
-                )),
-          );
-        });
-    String? fileName = 'wallpaperapp${DateTime.now()}.jpg';
-    var imgFile = await downloadImage(imgUrl, fileName);
-    if (imgFile == null) {
-      return;
-    }
-    print('PATH= ${imgFile.path}');
-
-    await OpenFile.open(imgFile.path);
-
-    Navigator.pop(context);
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Wallpaper downloaded Successfully')));
-  }
-
   @override
   Widget build(BuildContext context) {
+    final themData = context.read<ThemeProvider>();
+
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
+
+    Future setHomeScreen(String imgUrl) async {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                  color: themData.isDark ? Colors.black : Colors.white,
+                  height: 300,
+                  width: 300,
+                  child: SpinKitWave(
+                    color: Color.fromARGB(255, 246, 54, 6),
+                    size: 50.0,
+                  )),
+            );
+          });
+      var location = WallpaperManagerFlutter.HOME_SCREEN;
+      final file = await DefaultCacheManager().getSingleFile(imgUrl);
+      await WallpaperManagerFlutter()
+          .setwallpaperfromFile(File(file.path), location);
+
+      Navigator.pop(context);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
+    }
+
+    Future setLockScreen(String imgUrl) async {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                  color: themData.isDark ? Colors.black : Colors.white,
+                  height: 300,
+                  width: 300,
+                  child: SpinKitWave(
+                    color: Color.fromARGB(255, 246, 54, 6),
+                    size: 50.0,
+                  )),
+            );
+          });
+      var location = WallpaperManagerFlutter.LOCK_SCREEN;
+      final file = await DefaultCacheManager().getSingleFile(imgUrl);
+      await WallpaperManagerFlutter()
+          .setwallpaperfromFile(File(file.path), location);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Wallpaper set successfully')));
+    }
+
+    Future setBothScreens(String imgUrl) async {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                  color: themData.isDark ? Colors.black : Colors.white,
+                  height: 300,
+                  width: 300,
+                  child: SpinKitWave(
+                    color: Color.fromARGB(255, 246, 54, 6),
+                    size: 50.0,
+                  )),
+            );
+          });
+      var location = WallpaperManagerFlutter.BOTH_SCREENS;
+      final file = await DefaultCacheManager().getSingleFile(imgUrl);
+      await WallpaperManagerFlutter()
+          .setwallpaperfromFile(File(file.path), location);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Wallpaper set successfully')));
+    }
+
+    Directory? appDir;
+    Future<File?> downloadImage(String imgUrl, String fileName) async {
+      try {
+        // final appDir = await path.getApplicationDocumentsDirectory();
+        var dir = await getExternalStorageDirectory();
+        appDir = Directory('${dir!.path}/downloades');
+        if (!appDir!.existsSync()) {
+          await appDir!.create();
+        }
+
+        final file = File('${appDir!.path}/$fileName');
+        final response = await Dio().get(imgUrl,
+            options: Options(
+                followRedirects: false,
+                receiveTimeout: 0,
+                responseType: ResponseType.bytes));
+        final raf = file.openSync(mode: FileMode.write);
+        raf.writeFromSync(response.data);
+        await raf.close();
+        await GallerySaver.saveImage(file.path);
+        return file;
+      } catch (err) {
+        print(err);
+        return null;
+      }
+    }
+
+    Future<void> openImage(String imgUrl) async {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                  color: themData.isDark ? Colors.black : Colors.white,
+                  height: 300,
+                  width: 300,
+                  child: SpinKitWave(
+                    color: Color.fromARGB(255, 246, 54, 6),
+                    size: 50.0,
+                  )),
+            );
+          });
+      String? fileName = 'wallpaperapp${DateTime.now()}.jpg';
+      var imgFile = await downloadImage(imgUrl, fileName);
+      if (imgFile == null) {
+        return;
+      }
+      print('PATH= ${imgFile.path}');
+
+      await OpenFile.open(imgFile.path);
+
+      Navigator.pop(context);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Wallpaper downloaded Successfully')));
+    }
 
     return Scaffold(
       body: CarouselSlider.builder(
@@ -211,9 +215,12 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                           child: Column(
                             children: [
                               IconButton(
+                                  color: Colors.white,
                                   onPressed: () {
                                     showModalBottomSheet(
-                                        backgroundColor: Colors.black,
+                                        backgroundColor: themData.isDark
+                                            ? Colors.black
+                                            : Colors.white,
                                         shape: const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.only(
                                                 topLeft: Radius.circular(20),
@@ -257,14 +264,31 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                                                                                   : null,
                                                               leading: Icon(
                                                                 e.icon,
-                                                                color: Color(
-                                                                    0xffadff02),
+                                                                color: themData
+                                                                        .isDark
+                                                                    ? Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            172,
+                                                                            231,
+                                                                            112)
+                                                                    : Colors
+                                                                        .black,
                                                               ),
                                                               title: Text(
                                                                 e.txt,
-                                                                style: TextStyle(
-                                                                    color: Color(
-                                                                        0xffadff02)),
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: themData
+                                                                          .isDark
+                                                                      ? Color.fromARGB(
+                                                                          255,
+                                                                          172,
+                                                                          231,
+                                                                          112)
+                                                                      : Colors
+                                                                          .black,
+                                                                ),
                                                               ),
                                                             ))
                                                         .toList()),
@@ -274,7 +298,10 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                                     //           height: 300,
                                     //         ));
                                   },
-                                  icon: Icon(Icons.download_outlined)),
+                                  icon: Icon(
+                                    Icons.download_outlined,
+                                    color: Colors.white,
+                                  )),
                             ],
                           ),
                         ),

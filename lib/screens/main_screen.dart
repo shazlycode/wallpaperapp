@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
+import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_app/screens/cat_details.dart';
 import 'package:http/http.dart' as http;
 import 'package:wallpaper_app/screens/photo_detail_screen.dart';
@@ -76,6 +78,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var themeProviderData = context.read<ThemeProvider>();
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -222,7 +225,10 @@ class _MainScreenState extends State<MainScreen> {
                 onPressed: () {
                   k.currentState!.openDrawer();
                 },
-                icon: Icon(Icons.menu)),
+                icon: Icon(
+                  Icons.menu,
+                  color: themeProviderData.isDark ? Colors.white : Colors.white,
+                )),
           ),
           Positioned(
             top: h / 10,
@@ -233,11 +239,19 @@ class _MainScreenState extends State<MainScreen> {
                 Text(
                   'LOKING FOR 4k',
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.lato(fontSize: 40),
+                  style: GoogleFonts.lato(
+                      fontSize: 40,
+                      color: themeProviderData.isDark
+                          ? Colors.white
+                          : Colors.white),
                 ),
                 Text(
                   'WALLPAPER?',
-                  style: GoogleFonts.lato(fontSize: 40),
+                  style: GoogleFonts.lato(
+                    fontSize: 40,
+                    color:
+                        themeProviderData.isDark ? Colors.white : Colors.white,
+                  ),
                 )
               ],
             ),
@@ -256,7 +270,9 @@ class _MainScreenState extends State<MainScreen> {
                   );
                 })).then((value) => searchText.clear());
               },
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(
+                  color:
+                      themeProviderData.isDark ? Colors.white : Colors.black),
               decoration: InputDecoration(
                 filled: true,
                 border: OutlineInputBorder(
@@ -265,26 +281,31 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
                 hintText: 'Search For Free Wallpaper',
-                hintStyle: TextStyle(color: Colors.black),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.black,
-                ),
-                fillColor: Color.fromARGB(255, 253, 253, 252),
+                hintStyle: TextStyle(
+                    color:
+                        themeProviderData.isDark ? Colors.white : Colors.black),
+                prefixIcon: Icon(Icons.search,
+                    color: themeProviderData.isDark
+                        ? Color.fromARGB(255, 250, 249, 249)
+                        : Color.fromARGB(255, 10, 10, 10)),
+                fillColor: themeProviderData.isDark
+                    ? Color.fromARGB(255, 3, 3, 3)
+                    : Color.fromARGB(255, 253, 253, 252),
               ),
             ),
           ),
           Positioned(
             top: h / 3,
             child: Container(
+              // color: themeProviderData.isDark ? Colors.black : Colors.white,
               padding: EdgeInsets.all(10),
               height: h / 1.5,
               width: w,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40)),
-                color: Colors.white,
+                color: themeProviderData.isDark ? Colors.black : Colors.white,
               ),
               child: SingleChildScrollView(
                 child: Column(
@@ -295,7 +316,9 @@ class _MainScreenState extends State<MainScreen> {
                       child: Text(
                         'WALLPAPERS',
                         style: GoogleFonts.lato(
-                            color: Colors.black,
+                            color: themeProviderData.isDark
+                                ? Colors.white
+                                : Colors.black,
                             fontWeight: FontWeight.w900,
                             fontSize: 35),
                       ),
@@ -306,9 +329,12 @@ class _MainScreenState extends State<MainScreen> {
                         Text(
                           'Popular Now...',
                           style: GoogleFonts.lato(
-                              color: Colors.black, fontWeight: FontWeight.w800),
+                              color: themeProviderData.isDark
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.w800),
                         ),
-                        TextButton(onPressed: () {}, child: const Text('More'))
+                        // TextButton(onPressed: () {}, child: const Text('More'))
                       ],
                     ),
                     FutureBuilder(

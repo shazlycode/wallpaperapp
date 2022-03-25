@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 // import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
+import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 
 class Option {
@@ -34,93 +36,95 @@ class _SavedImageViewState extends State<SavedImageView> {
     Option(id: 4, icon: Icons.close_rounded, txt: 'Close'),
   ];
 
-  Future setHomeScreen(File imgFile) async {
-    await showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Container(
-                color: Colors.black,
-                height: 300,
-                width: 300,
-                child: SpinKitWave(
-                  color: Color.fromARGB(255, 246, 54, 6),
-                  size: 50.0,
-                )),
-          );
-        });
-    const location = WallpaperManagerFlutter.HOME_SCREEN;
-
-    await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
-    Navigator.pop(context);
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
-  }
-
-  Future<void> setLockScreen(File imgFile) async {
-    setState(() {
-      _isLoading = true;
-    });
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Container(
-                color: Colors.black,
-                height: 300,
-                width: 300,
-                child: SpinKitWave(
-                  color: Color.fromARGB(255, 246, 54, 6),
-                  size: 50.0,
-                )),
-          );
-        });
-    const location = WallpaperManagerFlutter.LOCK_SCREEN;
-
-    await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
-    Navigator.pop(context);
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  Future<void> setBothScreen(File imgFile) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            child: Container(
-                color: Colors.black,
-                height: 300,
-                width: 300,
-                child: SpinKitWave(
-                  color: Color.fromARGB(255, 246, 54, 6),
-                  size: 50.0,
-                )),
-          );
-        });
-    const location = WallpaperManagerFlutter.BOTH_SCREENS;
-
-    await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
-    Navigator.pop(context);
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final themeData = context.read<ThemeProvider>();
+
+    Future setHomeScreen(File imgFile) async {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                  color: themeData.isDark ? Colors.black : Colors.white,
+                  height: 300,
+                  width: 300,
+                  child: SpinKitWave(
+                    color: Color.fromARGB(255, 246, 54, 6),
+                    size: 50.0,
+                  )),
+            );
+          });
+      const location = WallpaperManagerFlutter.HOME_SCREEN;
+
+      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
+    }
+
+    Future<void> setLockScreen(File imgFile) async {
+      setState(() {
+        _isLoading = true;
+      });
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                  color: themeData.isDark ? Colors.black : Colors.white,
+                  height: 300,
+                  width: 300,
+                  child: SpinKitWave(
+                    color: Color.fromARGB(255, 246, 54, 6),
+                    size: 50.0,
+                  )),
+            );
+          });
+      const location = WallpaperManagerFlutter.LOCK_SCREEN;
+
+      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
+      setState(() {
+        _isLoading = false;
+      });
+    }
+
+    Future<void> setBothScreen(File imgFile) async {
+      setState(() {
+        _isLoading = true;
+      });
+
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                  color: themeData.isDark ? Colors.black : Colors.white,
+                  height: 300,
+                  width: 300,
+                  child: SpinKitWave(
+                    color: Color.fromARGB(255, 246, 54, 6),
+                    size: 50.0,
+                  )),
+            );
+          });
+      const location = WallpaperManagerFlutter.BOTH_SCREENS;
+
+      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
+      setState(() {
+        _isLoading = false;
+      });
+    }
+
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -145,7 +149,8 @@ class _SavedImageViewState extends State<SavedImageView> {
               child: IconButton(
                 onPressed: () {
                   showModalBottomSheet(
-                      backgroundColor: Colors.black,
+                      backgroundColor:
+                          themeData.isDark ? Colors.black : Colors.white,
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(20),
@@ -182,12 +187,17 @@ class _SavedImageViewState extends State<SavedImageView> {
                                                             : null,
                                             leading: Icon(
                                               e.icon,
-                                              color: Color(0xffadff02),
+                                              color: themeData.isDark
+                                                  ? Color(0xffadff02)
+                                                  : Colors.black,
                                             ),
                                             title: Text(
                                               e.txt,
                                               style: TextStyle(
-                                                  color: Color(0xffadff02)),
+                                                color: themeData.isDark
+                                                    ? Color(0xffadff02)
+                                                    : Colors.black,
+                                              ),
                                             ),
                                           ))
                                       .toList()),
@@ -199,6 +209,7 @@ class _SavedImageViewState extends State<SavedImageView> {
                 },
                 icon: Icon(
                   Icons.download_for_offline_rounded,
+                  color: themeData.isDark ? Color(0xffadff02) : Colors.white,
                   size: 35,
                 ),
               )),
