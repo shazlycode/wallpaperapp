@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/providers/provider.dart';
+import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_app/screens/set_auto_wallpaper.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 import 'package:workmanager/workmanager.dart';
@@ -120,30 +122,53 @@ class _AutoWallpaperSettingsState extends State<AutoWallpaperSettings> {
   //   });
   // }
 
-  getAppDirectory() async {
-    var dir = await path.getExternalStorageDirectory();
-    print(dir);
-  }
-
   @override
   Widget build(BuildContext context) {
     final wallpaperProviderData = context.read<WallpaperProvider>();
-    getAppDirectory();
+
+    setAutoWallpaper() async {
+      var wpList = context.read<WallpaperProvider>().autoThemeImages;
+      print(wpList[1]);
+      Timer.periodic(Duration(minutes: minutes), (timer) async {
+        int index = Random().nextInt(wpList.length);
+        const location = WallpaperManagerFlutter.BOTH_SCREENS;
+        await WallpaperManagerFlutter()
+            .setwallpaperfromFile(File(wpList[index]), location);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Wallpaper Settings'),
         actions: [
           IconButton(
               onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Caution!!!'),
+                        content: Text(
+                            'You should keep the app running in the background.'),
+                        actions: [
+                          ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('No')),
+                          ElevatedButton(
+                              onPressed: () {
+                                if (minutes == null) {
+                                  return;
+                                }
+                                setAutoWallpaper();
+                                Navigator.pop(context);
+                              },
+                              child: Text('Ok')),
+                        ],
+                      );
+                    });
                 // Workmanager().registerOneOffTask('uniqueName', 'taskName',
                 //     initialDelay: Duration(seconds: 1));
                 // print('DONEEEEEEEEEEEEEEEEEEE');
-                final autoThemeImages =
-                    context.read<WallpaperProvider>().autoThemeImages;
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return SetAutoWallpaper(
-                      autoThemeImages: autoThemeImages, minutes: minutes);
-                }));
               },
               icon: Icon(Icons.done))
         ],

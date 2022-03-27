@@ -50,14 +50,14 @@ class _SideDrawerState extends State<SideDrawer> {
                   onTap: () {
                     Navigator.popAndPushNamed(context, DownloadsScreen.id);
                   }),
-              // ListTile(
-              //   onTap: () => Navigator.push(context,
-              //       MaterialPageRoute(builder: (context) {
-              //     return AutoWallpaperSettings();
-              //   })),
-              //   title: Text('Auto Wallpaper Settings'),
-              //   leading: FaIcon(FontAwesomeIcons.hammer, color: Colors.white),
-              // ),
+              ListTile(
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
+                  return AutoWallpaperSettings();
+                })),
+                title: Text('Auto Wallpaper Settings'),
+                leading: FaIcon(FontAwesomeIcons.hammer, color: Colors.white),
+              ),
               ListTile(
                 leading: Text('Theme'),
                 title: Row(
