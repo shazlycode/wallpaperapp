@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:wallpaper_app/providers/ad_helper.dart';
 import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_app/screens/cat_details.dart';
 import 'package:http/http.dart' as http;
@@ -75,6 +77,83 @@ class _MainScreenState extends State<MainScreen> {
     Cat(id: '19', catImage: 'assets/images/Winter.jpg', catName: 'Winter'),
     Cat(id: '20', catImage: 'assets/images/Animals.jpg', catName: 'Animals'),
   ];
+// TODO: Add _bannerAd
+  late BannerAd _bannerAd;
+
+  // TODO: Add _isBannerAdReady
+  bool _isBannerAdReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _initGoogleMobileAds();
+
+    // TODO: Initialize _bannerAd
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+
+    _bannerAd.load();
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    // TODO: Initialize Google Mobile Ads SDK
+    return MobileAds.instance.initialize();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd.dispose();
+    _interstitialAd?.dispose();
+
+    super.dispose();
+  }
+
+// TODO: Add _interstitialAd
+  InterstitialAd? _interstitialAd;
+
+  // TODO: Add _isInterstitialAdReady
+  bool _isInterstitialAdReady = false;
+
+  // TODO: Implement _loadInterstitialAd()
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          this._interstitialAd = ad;
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              // _moveToHome();
+            },
+          );
+
+          _isInterstitialAdReady = true;
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
+          _isInterstitialAdReady = false;
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -360,6 +439,8 @@ class _MainScreenState extends State<MainScreen> {
                                           index: snapshot.data['photos'][index]
                                               ['id']),
                                     ));
+                                    _loadInterstitialAd();
+                                    _interstitialAd?.show();
                                   },
                                   child: Card(
                                     elevation: 10,
@@ -396,6 +477,15 @@ class _MainScreenState extends State<MainScreen> {
                       style: GoogleFonts.lato(
                           color: Colors.black, fontWeight: FontWeight.w800),
                     ),
+                    if (_isBannerAdReady)
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          width: _bannerAd.size.width.toDouble(),
+                          height: _bannerAd.size.height.toDouble(),
+                          child: AdWidget(ad: _bannerAd),
+                        ),
+                      ),
                     Container(
                       height: h / 4,
                       child: GridView.builder(
@@ -408,10 +498,13 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         itemBuilder: (context, index) {
                           return GestureDetector(
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        CatDetails(cat: img[index]))),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      CatDetails(cat: img[index])));
+                              _loadInterstitialAd();
+                              _interstitialAd?.show();
+                            },
                             child: Card(
                               elevation: 5,
                               child: Container(
