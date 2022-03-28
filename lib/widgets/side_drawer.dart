@@ -81,13 +81,13 @@ class _SideDrawerState extends State<SideDrawer> {
                   ],
                 ),
               ),
-              ListTile(
-                title: Text('Get Pro'),
-                leading: FaIcon(
-                  FontAwesomeIcons.ad,
-                  color: themeData.isDark ? Colors.white : Colors.black,
-                ),
-              ),
+              // ListTile(
+              //   title: Text('Get Pro'),
+              //   leading: FaIcon(
+              //     FontAwesomeIcons.ad,
+              //     color: themeData.isDark ? Colors.white : Colors.black,
+              //   ),
+              // ),
               ListTile(
                 title: Text('Explore more...'),
                 leading: FaIcon(

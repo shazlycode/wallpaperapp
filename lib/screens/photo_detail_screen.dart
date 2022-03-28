@@ -56,10 +56,10 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
   void _loadRewardedAd() {
     RewardedAd.load(
       adUnitId: AdHelper.rewardedAdUnitId,
-      request: AdRequest(),
+      request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
-          this._rewardedAd = ad;
+          _rewardedAd = ad;
 
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
@@ -115,7 +115,7 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                   color: themData.isDark ? Colors.black : Colors.white,
                   height: 300,
                   width: 300,
-                  child: SpinKitWave(
+                  child: const SpinKitWave(
                     color: Color.fromARGB(255, 246, 54, 6),
                     size: 50.0,
                   )),
@@ -132,7 +132,7 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
 
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Wallpaper set successfully')));
+              const SnackBar(content: Text('Wallpaper set successfully')));
         });
       }
       Navigator.pop(context);
@@ -154,7 +154,7 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                   color: themData.isDark ? Colors.black : Colors.white,
                   height: 300,
                   width: 300,
-                  child: SpinKitWave(
+                  child: const SpinKitWave(
                     color: Color.fromARGB(255, 246, 54, 6),
                     size: 50.0,
                   )),
@@ -185,7 +185,7 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                   color: themData.isDark ? Colors.black : Colors.white,
                   height: 300,
                   width: 300,
-                  child: SpinKitWave(
+                  child: const SpinKitWave(
                     color: Color.fromARGB(255, 246, 54, 6),
                     size: 50.0,
                   )),
@@ -243,7 +243,7 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                   color: themData.isDark ? Colors.black : Colors.white,
                   height: 300,
                   width: 300,
-                  child: SpinKitWave(
+                  child: const SpinKitWave(
                     color: Color.fromARGB(255, 246, 54, 6),
                     size: 50.0,
                   )),
@@ -276,11 +276,11 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
           itemCount: widget.picsList!.length,
           itemBuilder: (context, index, f) {
             return Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 height: h,
                 width: w,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     image: DecorationImage(
                         image: NetworkImage(
                             widget.picsList![index]['src']['large']),
@@ -293,9 +293,9 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                       Align(
                         alignment: Alignment.topRight,
                         child: Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
+                          padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.all(5),
+                          decoration: const BoxDecoration(
                               color: Colors.black87,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(25))),
@@ -314,11 +314,11 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                                                 topRight: Radius.circular(20))),
                                         context: context,
                                         builder: (context) => _isLoading
-                                            ? Center(
+                                            ? const Center(
                                                 child:
                                                     CircularProgressIndicator(),
                                               )
-                                            : Container(
+                                            : SizedBox(
                                                 height: 300,
                                                 child: ListView(
                                                     children: optionList
@@ -353,12 +353,12 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                                                                 e.icon,
                                                                 color: themData
                                                                         .isDark
-                                                                    ? Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            172,
-                                                                            231,
-                                                                            112)
+                                                                    ? const Color
+                                                                            .fromARGB(
+                                                                        255,
+                                                                        172,
+                                                                        231,
+                                                                        112)
                                                                     : Colors
                                                                         .black,
                                                               ),
@@ -368,7 +368,8 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                                                                     TextStyle(
                                                                   color: themData
                                                                           .isDark
-                                                                      ? Color.fromARGB(
+                                                                      ? const Color
+                                                                              .fromARGB(
                                                                           255,
                                                                           172,
                                                                           231,
@@ -385,7 +386,7 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                                     //           height: 300,
                                     //         ));
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.download_outlined,
                                     color: Colors.white,
                                   )),

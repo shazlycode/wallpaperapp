@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 // import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:wallpaper_app/providers/ad_helper.dart';
 import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
 
@@ -35,94 +37,193 @@ class _SavedImageViewState extends State<SavedImageView> {
     // Option(id: 4, icon: Icons.download_outlined, txt: 'Download'),
     Option(id: 4, icon: Icons.close_rounded, txt: 'Close'),
   ];
+  late BannerAd _bannerAd;
+// TODO: Add _bannerAd
+
+  // TODO: Add _isBannerAdReady
+  bool _isBannerAdReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _initGoogleMobileAds();
+
+    // TODO: Initialize _bannerAd
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+    _loadRewardedAd();
+
+    _bannerAd.load();
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    // TODO: Initialize Google Mobile Ads SDK
+    return MobileAds.instance.initialize();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd.dispose();
+    _interstitialAd?.dispose();
+    _rewardedAd.dispose();
+
+    super.dispose();
+  }
+
+// TODO: Add _interstitialAd
+  InterstitialAd? _interstitialAd;
+
+  // TODO: Add _isInterstitialAdReady
+  bool _isInterstitialAdReady = false;
+
+  // TODO: Implement _loadInterstitialAd()
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              // _moveToHome();
+            },
+          );
+
+          _isInterstitialAdReady = true;
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
+          _isInterstitialAdReady = false;
+        },
+      ),
+    );
+  }
+
+// TODO: Add _rewardedAd
+  late RewardedAd _rewardedAd;
+
+  // TODO: Add _isRewardedAdReady
+  bool _isRewardedAdReady = false;
+
+  // TODO: Implement _loadRewardedAd()
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: AdHelper.rewardedAdUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _rewardedAd = ad;
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              setState(() {
+                _isRewardedAdReady = false;
+              });
+              _loadRewardedAd();
+            },
+          );
+
+          setState(() {
+            _isRewardedAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load a rewarded ad: ${err.message}');
+          setState(() {
+            _isRewardedAdReady = false;
+          });
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeData = context.read<ThemeProvider>();
 
     Future setHomeScreen(File imgFile) async {
-      await showDialog(
-          context: context,
-          builder: (context) {
-            return Dialog(
-              child: Container(
-                  color: themeData.isDark ? Colors.black : Colors.white,
-                  height: 300,
-                  width: 300,
-                  child: SpinKitWave(
-                    color: Color.fromARGB(255, 246, 54, 6),
-                    size: 50.0,
-                  )),
-            );
-          });
-      const location = WallpaperManagerFlutter.HOME_SCREEN;
+      // await showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return Dialog(
+      //         child: Container(
+      //             color: themeData.isDark ? Colors.black : Colors.white,
+      //             height: 300,
+      //             width: 300,
+      //             child: SpinKitWave(
+      //               color: Color.fromARGB(255, 246, 54, 6),
+      //               size: 50.0,
+      //             )),
+      //       );
+      //     });
 
-      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+      _loadRewardedAd();
+      if (_isRewardedAdReady) {
+        _rewardedAd.show(
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
+          const location = WallpaperManagerFlutter.HOME_SCREEN;
+
+          await WallpaperManagerFlutter()
+              .setwallpaperfromFile(imgFile, location);
+          Navigator.pop(context);
+          // Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Wallpaper set successfully')));
+        });
+      }
       Navigator.pop(context);
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
     }
 
     Future<void> setLockScreen(File imgFile) async {
-      setState(() {
-        _isLoading = true;
-      });
-      showDialog(
-          context: context,
-          builder: (context) {
-            return Dialog(
-              child: Container(
-                  color: themeData.isDark ? Colors.black : Colors.white,
-                  height: 300,
-                  width: 300,
-                  child: SpinKitWave(
-                    color: Color.fromARGB(255, 246, 54, 6),
-                    size: 50.0,
-                  )),
-            );
-          });
-      const location = WallpaperManagerFlutter.LOCK_SCREEN;
+      _loadRewardedAd();
+      if (_isRewardedAdReady) {
+        _rewardedAd.show(
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
+          const location = WallpaperManagerFlutter.LOCK_SCREEN;
 
-      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+          await WallpaperManagerFlutter()
+              .setwallpaperfromFile(imgFile, location);
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Wallpaper set successfully')));
+        });
+      }
       Navigator.pop(context);
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
-      setState(() {
-        _isLoading = false;
-      });
     }
 
     Future<void> setBothScreen(File imgFile) async {
-      setState(() {
-        _isLoading = true;
-      });
+      _loadRewardedAd();
+      if (_isRewardedAdReady) {
+        _rewardedAd.show(
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
+          const location = WallpaperManagerFlutter.BOTH_SCREENS;
 
-      showDialog(
-          context: context,
-          builder: (context) {
-            return Dialog(
-              child: Container(
-                  color: themeData.isDark ? Colors.black : Colors.white,
-                  height: 300,
-                  width: 300,
-                  child: SpinKitWave(
-                    color: Color.fromARGB(255, 246, 54, 6),
-                    size: 50.0,
-                  )),
-            );
-          });
-      const location = WallpaperManagerFlutter.BOTH_SCREENS;
-
-      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+          await WallpaperManagerFlutter()
+              .setwallpaperfromFile(imgFile, location);
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Wallpaper set successfully')));
+        });
+      }
       Navigator.pop(context);
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
-      setState(() {
-        _isLoading = false;
-      });
     }
 
     final h = MediaQuery.of(context).size.height;
@@ -162,45 +263,63 @@ class _SavedImageViewState extends State<SavedImageView> {
                             )
                           : Container(
                               height: 300,
-                              child: ListView(
-                                  children: optionList
-                                      .map((e) => ListTile(
-                                            onTap: e.id == 1
-                                                ? () {
-                                                    setHomeScreen(
-                                                        widget.image!);
-                                                  }
-                                                : e.id == 2
-                                                    ? () {
-                                                        setLockScreen(
-                                                            widget.image!);
-                                                      }
-                                                    : e.id == 3
-                                                        ? () {
-                                                            setBothScreen(
-                                                                widget.image!);
-                                                          }
-                                                        : e.id == 4
-                                                            ? () =>
-                                                                Navigator.pop(
-                                                                    context)
-                                                            : null,
-                                            leading: Icon(
-                                              e.icon,
-                                              color: themeData.isDark
-                                                  ? Color(0xffadff02)
-                                                  : Colors.black,
-                                            ),
-                                            title: Text(
-                                              e.txt,
-                                              style: TextStyle(
-                                                color: themeData.isDark
-                                                    ? Color(0xffadff02)
-                                                    : Colors.black,
-                                              ),
-                                            ),
-                                          ))
-                                      .toList()),
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: ListView(
+                                        children: optionList
+                                            .map((e) => ListTile(
+                                                  onTap: e.id == 1
+                                                      ? () {
+                                                          setHomeScreen(
+                                                              widget.image!);
+                                                        }
+                                                      : e.id == 2
+                                                          ? () {
+                                                              setLockScreen(
+                                                                  widget
+                                                                      .image!);
+                                                            }
+                                                          : e.id == 3
+                                                              ? () {
+                                                                  setBothScreen(
+                                                                      widget
+                                                                          .image!);
+                                                                }
+                                                              : e.id == 4
+                                                                  ? () => Navigator
+                                                                      .pop(
+                                                                          context)
+                                                                  : null,
+                                                  leading: Icon(
+                                                    e.icon,
+                                                    color: themeData.isDark
+                                                        ? Color(0xffadff02)
+                                                        : Colors.black,
+                                                  ),
+                                                  title: Text(
+                                                    e.txt,
+                                                    style: TextStyle(
+                                                      color: themeData.isDark
+                                                          ? Color(0xffadff02)
+                                                          : Colors.black,
+                                                    ),
+                                                  ),
+                                                ))
+                                            .toList()),
+                                  ),
+                                  if (_isBannerAdReady)
+                                    Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Container(
+                                        width: _bannerAd.size.width.toDouble(),
+                                        height:
+                                            _bannerAd.size.height.toDouble(),
+                                        child: AdWidget(ad: _bannerAd),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ));
                   // Scaffold.of(context)
                   //     .showBottomSheet((context) => Container(

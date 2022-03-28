@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "233242032669",
+    "project_id": "wallpaperapp-bf2ad",
+    "storage_bucket": "wallpaperapp-bf2ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233242032669:android:65fda2f8fc91912d8ca4f4",
+        "android_client_info": {
+          "package_name": "com.shazlycode.wallpaper_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233242032669-9bu9cfv0893esmnpt7c7de1a75bjp68q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtizMRYXRw8lzBDBBSwrV5EcZxhJbK5KU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233242032669-9bu9cfv0893esmnpt7c7de1a75bjp68q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

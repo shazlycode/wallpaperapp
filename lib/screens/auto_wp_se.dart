@@ -3,7 +3,9 @@ import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:wallpaper_app/providers/ad_helper.dart';
 import 'package:wallpaper_app/providers/provider.dart';
 import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_app/screens/set_auto_wallpaper.dart';
@@ -20,9 +22,123 @@ class AutoWallpaperSettings extends StatefulWidget {
 
 class _AutoWallpaperSettingsState extends State<AutoWallpaperSettings> {
   var minutes;
+
+  late BannerAd _bannerAd;
+// TODO: Add _bannerAd
+
+  // TODO: Add _isBannerAdReady
+  bool _isBannerAdReady = false;
+
   @override
   void initState() {
     super.initState();
+
+    _initGoogleMobileAds();
+
+    // TODO: Initialize _bannerAd
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+    _loadRewardedAd();
+
+    _bannerAd.load();
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    // TODO: Initialize Google Mobile Ads SDK
+    return MobileAds.instance.initialize();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd.dispose();
+    _interstitialAd?.dispose();
+    _rewardedAd.dispose();
+
+    super.dispose();
+  }
+
+// TODO: Add _interstitialAd
+  InterstitialAd? _interstitialAd;
+
+  // TODO: Add _isInterstitialAdReady
+  bool _isInterstitialAdReady = false;
+
+  // TODO: Implement _loadInterstitialAd()
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              // _moveToHome();
+            },
+          );
+
+          _isInterstitialAdReady = true;
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load an interstitial ad: ${err.message}');
+          _isInterstitialAdReady = false;
+        },
+      ),
+    );
+  }
+
+// TODO: Add _rewardedAd
+  late RewardedAd _rewardedAd;
+
+  // TODO: Add _isRewardedAdReady
+  bool _isRewardedAdReady = false;
+
+  // TODO: Implement _loadRewardedAd()
+  void _loadRewardedAd() {
+    RewardedAd.load(
+      adUnitId: AdHelper.rewardedAdUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _rewardedAd = ad;
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              setState(() {
+                _isRewardedAdReady = false;
+              });
+              _loadRewardedAd();
+            },
+          );
+
+          setState(() {
+            _isRewardedAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (err) {
+          print('Failed to load a rewarded ad: ${err.message}');
+          setState(() {
+            _isRewardedAdReady = false;
+          });
+        },
+      ),
+    );
   }
 
   final List<DropdownMenuItem> _dDMI = [
@@ -159,6 +275,8 @@ class _AutoWallpaperSettingsState extends State<AutoWallpaperSettings> {
                                 if (minutes == null) {
                                   return;
                                 }
+                                _loadInterstitialAd();
+                                _interstitialAd?.show();
                                 setAutoWallpaper();
                                 Navigator.pop(context);
                               },
@@ -247,7 +365,16 @@ class _AutoWallpaperSettingsState extends State<AutoWallpaperSettings> {
                             ),
                           );
                         }),
-                  )
+                  ),
+            if (_isBannerAdReady)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  width: _bannerAd.size.width.toDouble(),
+                  height: _bannerAd.size.height.toDouble(),
+                  child: AdWidget(ad: _bannerAd),
+                ),
+              ),
           ],
         ),
       ),

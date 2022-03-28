@@ -92,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: Initialize _bannerAd
     _bannerAd = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
-      request: AdRequest(),
+      request: const AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(
         onAdLoaded: (_) {
@@ -134,10 +134,10 @@ class _MainScreenState extends State<MainScreen> {
   void _loadInterstitialAd() {
     InterstitialAd.load(
       adUnitId: AdHelper.interstitialAdUnitId,
-      request: AdRequest(),
+      request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
-          this._interstitialAd = ad;
+          _interstitialAd = ad;
 
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
@@ -163,7 +163,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       key: k,
       // backgroundColor: Colors.amberAccent,
-      drawer: SideDrawer(),
+      drawer: const SideDrawer(),
       body: SafeArea(
           // child:
           //     CustomScrollView(
@@ -295,7 +295,7 @@ class _MainScreenState extends State<MainScreen> {
           Image(
             height: h * 2,
             width: w,
-            image: AssetImage('assets/images/bg.webp'),
+            image: const AssetImage('assets/images/bg.webp'),
             fit: BoxFit.cover,
           ),
           Align(
@@ -354,7 +354,7 @@ class _MainScreenState extends State<MainScreen> {
                       themeProviderData.isDark ? Colors.white : Colors.black),
               decoration: InputDecoration(
                 filled: true,
-                border: OutlineInputBorder(
+                border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(20.0),
                   ),
@@ -365,11 +365,11 @@ class _MainScreenState extends State<MainScreen> {
                         themeProviderData.isDark ? Colors.white : Colors.black),
                 prefixIcon: Icon(Icons.search,
                     color: themeProviderData.isDark
-                        ? Color.fromARGB(255, 250, 249, 249)
-                        : Color.fromARGB(255, 10, 10, 10)),
+                        ? const Color.fromARGB(255, 250, 249, 249)
+                        : const Color.fromARGB(255, 10, 10, 10)),
                 fillColor: themeProviderData.isDark
-                    ? Color.fromARGB(255, 3, 3, 3)
-                    : Color.fromARGB(255, 253, 253, 252),
+                    ? const Color.fromARGB(255, 3, 3, 3)
+                    : const Color.fromARGB(255, 253, 253, 252),
               ),
             ),
           ),
@@ -377,11 +377,11 @@ class _MainScreenState extends State<MainScreen> {
             top: h / 3,
             child: Container(
               // color: themeProviderData.isDark ? Colors.black : Colors.white,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               height: h / 1.5,
               width: w,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40)),
                 color: themeProviderData.isDark ? Colors.black : Colors.white,
@@ -391,7 +391,7 @@ class _MainScreenState extends State<MainScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       child: Text(
                         'WALLPAPERS',
                         style: GoogleFonts.lato(
@@ -421,11 +421,11 @@ class _MainScreenState extends State<MainScreen> {
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return SpinKitDoubleBounce(
+                            return const SpinKitDoubleBounce(
                               color: Colors.red,
                             );
                           } else if (!snapshot.hasData) {
-                            return Text('No data available');
+                            return const Text('No data available');
                           }
                           return CarouselSlider.builder(
                               itemCount: snapshot.data['photos'].length,
@@ -447,7 +447,7 @@ class _MainScreenState extends State<MainScreen> {
                                     child: Container(
                                       // height: 180,
                                       // width: 150,
-                                      padding: EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       decoration: BoxDecoration(
                                           image: DecorationImage(
                                               image: NetworkImage(
@@ -455,7 +455,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     ['src']['medium']!,
                                               ),
                                               fit: BoxFit.cover),
-                                          borderRadius: BorderRadius.all(
+                                          borderRadius: const BorderRadius.all(
                                               Radius.circular(10))),
                                       // child: Image(image: AssetImage(img[index])),
                                     ),
@@ -469,7 +469,7 @@ class _MainScreenState extends State<MainScreen> {
                                   aspectRatio: 2,
                                   scrollDirection: Axis.horizontal));
                         }),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Text(
@@ -490,7 +490,8 @@ class _MainScreenState extends State<MainScreen> {
                       height: h / 4,
                       child: GridView.builder(
                         scrollDirection: Axis.horizontal,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 50 / 80,
                           crossAxisSpacing: 5,
@@ -526,7 +527,7 @@ class _MainScreenState extends State<MainScreen> {
                         itemCount: img.length,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 80,
                     )
                   ],

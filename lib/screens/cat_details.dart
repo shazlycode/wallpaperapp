@@ -150,7 +150,7 @@ class _CatDetailsState extends State<CatDetails> {
                       ),
                       SliverGrid(
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   childAspectRatio: 2,
                                   crossAxisSpacing: 5,
