@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
    <application
-        android:label="wallpaper_app"
+        android:label="4K Wallpaper - HD Background"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

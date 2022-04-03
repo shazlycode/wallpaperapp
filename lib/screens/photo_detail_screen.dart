@@ -1,18 +1,18 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart' as path;
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/providers/ad_helper.dart';
 import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_manager_flutter/wallpaper_manager_flutter.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 
 class PhotoDetailsScreen extends StatefulWidget {
   final List<dynamic>? picsList;
@@ -94,9 +94,9 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
   @override
   void dispose() {
     // TODO: Dispose a RewardedAd object
-    _rewardedAd.dispose();
 
     super.dispose();
+    _rewardedAd.dispose();
   }
 
   @override
@@ -124,28 +124,20 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
       _loadRewardedAd();
       if (_isRewardedAdReady) {
         _rewardedAd.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
-          var location = WallpaperManagerFlutter.HOME_SCREEN;
-          final file = await DefaultCacheManager().getSingleFile(imgUrl);
-          await WallpaperManagerFlutter()
-              .setwallpaperfromFile(File(file.path), location);
-
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Wallpaper set successfully')));
-        });
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {});
       }
+      var location = WallpaperManagerFlutter.HOME_SCREEN;
+      final file = await DefaultCacheManager().getSingleFile(imgUrl);
+      await WallpaperManagerFlutter()
+          .setwallpaperfromFile(File(file.path), location);
+
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Wallpaper set successfully')));
       Navigator.pop(context);
     }
 
     Future setLockScreen(String imgUrl) async {
-      _loadRewardedAd();
-      if (_isRewardedAdReady) {
-        _rewardedAd.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-          //
-        });
-      }
       showDialog(
           context: context,
           builder: (context) {
@@ -160,19 +152,19 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
                   )),
             );
           });
+
       _loadRewardedAd();
       if (_isRewardedAdReady) {
         _rewardedAd.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
-          var location = WallpaperManagerFlutter.LOCK_SCREEN;
-          final file = await DefaultCacheManager().getSingleFile(imgUrl);
-          await WallpaperManagerFlutter()
-              .setwallpaperfromFile(File(file.path), location);
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Wallpaper set successfully')));
-        });
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {});
       }
+      var location = WallpaperManagerFlutter.LOCK_SCREEN;
+      final file = await DefaultCacheManager().getSingleFile(imgUrl);
+      await WallpaperManagerFlutter()
+          .setwallpaperfromFile(File(file.path), location);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Wallpaper set successfully')));
       Navigator.pop(context);
     }
 
@@ -194,16 +186,15 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
       _loadRewardedAd();
       if (_isRewardedAdReady) {
         _rewardedAd.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
-          var location = WallpaperManagerFlutter.BOTH_SCREENS;
-          final file = await DefaultCacheManager().getSingleFile(imgUrl);
-          await WallpaperManagerFlutter()
-              .setwallpaperfromFile(File(file.path), location);
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Wallpaper set successfully')));
-        });
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {});
       }
+      var location = WallpaperManagerFlutter.BOTH_SCREENS;
+      final file = await DefaultCacheManager().getSingleFile(imgUrl);
+      await WallpaperManagerFlutter()
+          .setwallpaperfromFile(File(file.path), location);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Wallpaper set successfully')));
       Navigator.pop(context);
     }
 
@@ -253,21 +244,20 @@ class _PhotoDetailsScreenState extends State<PhotoDetailsScreen> {
       _loadRewardedAd();
       if (_isRewardedAdReady) {
         _rewardedAd.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
-          String? fileName = 'wallpaperapp${DateTime.now()}.jpg';
-          var imgFile = await downloadImage(imgUrl, fileName);
-          if (imgFile == null) {
-            return;
-          }
-          print('PATH= ${imgFile.path}');
-
-          await OpenFile.open(imgFile.path);
-
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Wallpaper downloaded Successfully')));
-        });
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {});
       }
+      String? fileName = 'wallpaperapp${DateTime.now()}.jpg';
+      var imgFile = await downloadImage(imgUrl, fileName);
+      if (imgFile == null) {
+        return;
+      }
+      print('PATH= ${imgFile.path}');
+
+      await OpenFile.open(imgFile.path);
+
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Wallpaper downloaded Successfully')));
       Navigator.pop(context);
     }
 

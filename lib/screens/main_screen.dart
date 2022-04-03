@@ -1,15 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/providers/ad_helper.dart';
 import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_app/screens/cat_details.dart';
-import 'package:http/http.dart' as http;
 import 'package:wallpaper_app/screens/photo_detail_screen.dart';
 import 'package:wallpaper_app/screens/search_screen.dart';
 import 'package:wallpaper_app/widgets/side_drawer.dart';
@@ -33,6 +34,8 @@ class _MainScreenState extends State<MainScreen> {
   var k = GlobalKey<ScaffoldState>();
   final searchText = TextEditingController();
 
+  bool? _isConnected;
+
   Future getTrending() async {
     var url = Uri.parse('https://api.pexels.com/v1/curated?per_page=20'
         // 'https://api.pexels.com/v1/search/?page=1&per_page=15&query=$catName'
@@ -50,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Cat> img = [
     Cat(id: '1', catImage: 'assets/images/Nature.jpg', catName: 'Nature'),
-    Cat(id: '2', catImage: 'assets/images/Space.jpg', catName: 'Space'),
+    Cat(id: '2', catImage: 'assets/images/Space.webp', catName: 'Space'),
     Cat(id: '4', catImage: 'assets/images/Macro.jpg', catName: 'Macro'),
     Cat(id: '5', catImage: 'assets/images/4k.jpg', catName: '4k'),
     Cat(id: '6', catImage: 'assets/images/Pro.jpg', catName: 'Pro'),
@@ -68,15 +71,16 @@ class _MainScreenState extends State<MainScreen> {
     Cat(id: '16', catImage: 'assets/images/Fire.jpg', catName: 'Fire'),
     Cat(
         id: '17',
-        catImage: 'assets/images/Reflections.jpg',
+        catImage: 'assets/images/Reflections.webp',
         catName: 'Reflections'),
     Cat(
         id: '18',
         catImage: 'assets/images/Aircrafts.jpg',
         catName: 'Aircrafts'),
-    Cat(id: '19', catImage: 'assets/images/Winter.jpg', catName: 'Winter'),
+    Cat(id: '19', catImage: 'assets/images/Winter.webp', catName: 'Winter'),
     Cat(id: '20', catImage: 'assets/images/Animals.jpg', catName: 'Animals'),
   ];
+
 // TODO: Add _bannerAd
   late BannerAd _bannerAd;
 
@@ -86,7 +90,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-
     _initGoogleMobileAds();
 
     // TODO: Initialize _bannerAd
@@ -120,7 +123,6 @@ class _MainScreenState extends State<MainScreen> {
   void dispose() {
     _bannerAd.dispose();
     _interstitialAd?.dispose();
-
     super.dispose();
   }
 
@@ -516,6 +518,7 @@ class _MainScreenState extends State<MainScreen> {
                                 child: Text(
                                   img[index].catName!,
                                   style: GoogleFonts.lato(
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       backgroundColor: Colors.black87),
                                 ),

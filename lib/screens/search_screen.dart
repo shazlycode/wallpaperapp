@@ -15,6 +15,14 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   Future search(String searchText) async {
+    if (searchText.contains('sex') ||
+        searchText.contains('porno') ||
+        searchText.contains('porn') ||
+        searchText.contains('hot')) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Safe Search is ON...')));
+      return;
+    }
     var url = Uri.parse(
         'https://api.pexels.com/v1/search?query=$searchText&per_page=80'
         // 'https://api.pexels.com/v1/search/?page=1&per_page=15&query=$catName'

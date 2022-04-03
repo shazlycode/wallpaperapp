@@ -178,17 +178,15 @@ class _SavedImageViewState extends State<SavedImageView> {
       _loadRewardedAd();
       if (_isRewardedAdReady) {
         _rewardedAd.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
-          const location = WallpaperManagerFlutter.HOME_SCREEN;
-
-          await WallpaperManagerFlutter()
-              .setwallpaperfromFile(imgFile, location);
-          Navigator.pop(context);
-          // Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Wallpaper set successfully')));
-        });
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {});
       }
+      const location = WallpaperManagerFlutter.HOME_SCREEN;
+
+      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+      Navigator.pop(context);
+      // Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
       Navigator.pop(context);
     }
 
@@ -196,16 +194,14 @@ class _SavedImageViewState extends State<SavedImageView> {
       _loadRewardedAd();
       if (_isRewardedAdReady) {
         _rewardedAd.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
-          const location = WallpaperManagerFlutter.LOCK_SCREEN;
-
-          await WallpaperManagerFlutter()
-              .setwallpaperfromFile(imgFile, location);
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Wallpaper set successfully')));
-        });
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {});
       }
+      const location = WallpaperManagerFlutter.LOCK_SCREEN;
+
+      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
       Navigator.pop(context);
     }
 
@@ -213,16 +209,14 @@ class _SavedImageViewState extends State<SavedImageView> {
       _loadRewardedAd();
       if (_isRewardedAdReady) {
         _rewardedAd.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
-          const location = WallpaperManagerFlutter.BOTH_SCREENS;
-
-          await WallpaperManagerFlutter()
-              .setwallpaperfromFile(imgFile, location);
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Wallpaper set successfully')));
-        });
+            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {});
       }
+      const location = WallpaperManagerFlutter.BOTH_SCREENS;
+
+      await WallpaperManagerFlutter().setwallpaperfromFile(imgFile, location);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Wallpaper set successfully')));
       Navigator.pop(context);
     }
 

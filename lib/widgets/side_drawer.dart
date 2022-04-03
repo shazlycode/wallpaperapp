@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wallpaper_app/providers/theme_provide.dart';
 import 'package:wallpaper_app/screens/auto_wp_se.dart';
 import 'package:wallpaper_app/screens/downloads.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SideDrawer extends StatefulWidget {
   const SideDrawer({Key? key}) : super(key: key);
@@ -22,10 +23,23 @@ class _SideDrawerState extends State<SideDrawer> {
         child: Scaffold(
             backgroundColor: themeData.isDark ? Colors.black : Colors.white,
             body: ListView(children: [
-              Text(
-                'Wallpaper App',
-                textAlign: TextAlign.center,
+              SizedBox(
+                height: 20,
               ),
+              Text('4K Wallpaper - HD Background',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.cairo(
+                      fontSize: 25, fontWeight: FontWeight.bold)),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                  height: 100,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      image: DecorationImage(
+                          image: AssetImage('assets/images/logo.png')))),
               ListTile(
                 onTap: () => Navigator.pushNamed(context, '/'),
                 title: Text(
@@ -56,7 +70,10 @@ class _SideDrawerState extends State<SideDrawer> {
                   return AutoWallpaperSettings();
                 })),
                 title: Text('Auto Wallpaper Settings'),
-                leading: FaIcon(FontAwesomeIcons.hammer, color: Colors.white),
+                leading: FaIcon(
+                  FontAwesomeIcons.hammer,
+                  color: themeData.isDark ? Colors.white : Colors.black,
+                ),
               ),
               ListTile(
                 leading: Text('Theme'),
